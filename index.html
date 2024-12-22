@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      width: 80%;
+      max-width: 1000px;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .editor {
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+      flex-grow: 1;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 16px;
+      resize: none;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .result-frame {
+      border: 1px solid #ccc;
+      height: 100%;
+      margin-top: 20px;
+      flex-grow: 1;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Live Code Tester</h1>
+
+    <div class="editor">
+      <textarea id="html-code" placeholder="Paste your HTML here..."></textarea>
+      <textarea id="css-code" placeholder="Paste your CSS here..."></textarea>
+      <textarea id="js-code" placeholder="Paste your JS here..."></textarea>
+      <button onclick="runCode()">Run Code</button>
+    </div>
+
+    <div class="result-frame">
+      <iframe id="result" style="width:100%; height:100%; border: none;"></iframe>
+    </div>
+  </div>
+
+  <script>
+    function runCode() {
+      const html = document.getElementById('html-code').value;
+      const css = document.getElementById('css-code').value;
+      const js = document.getElementById('js-code').value;
+
+      const iframe = document.getElementById('result');
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+      iframeDoc.open();
+      iframeDoc.write(`
+        <html>
+          <head>
+            <style>${css}</style>
+          </head>
+          <body>
+            ${html}
+            <script>${js}</script>
+          </body>
+        </html>
+      `);
+      iframeDoc.close();
+    }
+  </script>
+
+</body>
+</html>
