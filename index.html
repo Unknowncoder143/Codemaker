@@ -5,56 +5,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Live Code Editor with Bug Finder</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
       padding: 20px;
     }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #4CAF50;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
     textarea {
       width: 100%;
-      height: 150px;
-      margin-bottom: 10px;
-      font-family: monospace;
-    }
-    button {
+      height: 200px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
       padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      background-color: #fff;
+      transition: border-color 0.3s ease;
+    }
+
+    textarea:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+
+    button {
       background-color: #4CAF50;
       color: white;
       border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
       border-radius: 5px;
+      width: 100%;
+      transition: background-color 0.3s ease;
     }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
     iframe {
       width: 100%;
-      height: 300px;
-      border: 1px solid #ccc;
+      height: 350px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
     }
-    .output {
-      padding: 10px;
-      background: #f2f2f2;
-      margin-top: 10px;
-      border-radius: 5px;
+
+    .error-output {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      margin-top: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 14px;
+      color: #d9534f;
+      white-space: pre-wrap;
     }
-    .error {
-      color: red;
+
+    .error-output h3 {
+      margin-bottom: 10px;
+      color: #d9534f;
+      font-size: 18px;
     }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #777;
+      font-size: 14px;
+    }
+
   </style>
 </head>
 <body>
 
   <h2>Live Code Editor with Bug Finder</h2>
-  
-  <textarea id="html-code" placeholder="HTML Code"></textarea><br>
-  <textarea id="css-code" placeholder="CSS Code"></textarea><br>
-  <textarea id="js-code" placeholder="JavaScript Code"></textarea><br>
+
+  <div class="container">
+    <div>
+      <h3>HTML Code</h3>
+      <textarea id="html-code" placeholder="Write HTML code here..."></textarea>
+    </div>
+    <div>
+      <h3>CSS Code</h3>
+      <textarea id="css-code" placeholder="Write CSS code here..."></textarea>
+    </div>
+    <div>
+      <h3>JavaScript Code</h3>
+      <textarea id="js-code" placeholder="Write JavaScript code here..."></textarea>
+    </div>
+  </div>
 
   <button onclick="runCode()">Run Code</button>
 
   <h3>Result</h3>
   <iframe id="result"></iframe>
 
-  <h3>Errors</h3>
-  <div class="output" id="error-output"></div>
+  <div class="error-output" id="error-output">
+    <h3>Errors:</h3>
+  </div>
+
+  <div class="footer">
+    <p>made by rishi | Your Live Code Editor</p>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
   <script>
