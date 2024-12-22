@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Code Editor</title>
+  <title>Live Code Editor with Bug Finder</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -29,44 +29,104 @@
       height: 300px;
       border: 1px solid #ccc;
     }
+    .output {
+      padding: 10px;
+      background: #f2f2f2;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+    .error {
+      color: red;
+    }
   </style>
 </head>
 <body>
 
-  <h2>Live Code Tester</h2>
+  <h2>Live Code Editor with Bug Finder</h2>
   
-  <textarea id="html-code" placeholder="HTML Code"></textarea>
-  <textarea id="css-code" placeholder="CSS Code"></textarea>
-  <textarea id="js-code" placeholder="JavaScript Code"></textarea>
+  <textarea id="html-code" placeholder="HTML Code"></textarea><br>
+  <textarea id="css-code" placeholder="CSS Code"></textarea><br>
+  <textarea id="js-code" placeholder="JavaScript Code"></textarea><br>
 
   <button onclick="runCode()">Run Code</button>
 
   <h3>Result</h3>
   <iframe id="result"></iframe>
 
+  <h3>Errors</h3>
+  <div class="output" id="error-output"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
   <script>
     function runCode() {
       const htmlCode = document.getElementById('html-code').value;
       const cssCode = document.getElementById('css-code').value;
       const jsCode = document.getElementById('js-code').value;
-
       const iframe = document.getElementById('result');
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-      iframeDoc.open();
-      iframeDoc.write(`
-        <html>
-          <head>
-            <style>${cssCode}</style>
-          </head>
-          <body>
-            ${htmlCode}
-            <script>${jsCode}<\/script>
-          </body>
-        </html>
-      `);
-      iframeDoc.close();
+      // Reset error output
+      const errorOutput = document.getElementById('error-output');
+      errorOutput.textContent = '';
+
+      // Run the JavaScript linting
+      const isValidJS = JSHINT(jsCode);
+      if (!isValidJS) {
+        errorOutput.textContent = 'JavaScript Errors: \n';
+        JSHINT.errors.forEach((error) => {
+          errorOutput.textContent += `Line ${error.line}: ${error.reason}\n`;
+        });
+      }
+
+      // Validate HTML
+      validateHTML(htmlCode);
+
+      // Execute the code in the iframe if no errors
+      if (isValidJS) {
+        iframeDoc.open();
+        iframeDoc.write(`
+          <html>
+            <head>
+              <style>${cssCode}</style>
+            </head>
+            <body>
+              ${htmlCode}
+              <script>${jsCode}<\/script>
+            </body>
+          </html>
+        `);
+        iframeDoc.close();
+      }
+    }
+
+    // Validate HTML using W3C Validator API
+    function validateHTML(htmlCode) {
+      const validatorAPI = `https://validator.w3.org/nu/?doc=data:text/html;charset=utf-8,${encodeURIComponent(htmlCode)}`;
+      fetch(validatorAPI)
+        .then(response => response.json())
+        .then(data => {
+          if (data.messages.length > 0) {
+            const errorOutput = document.getElementById('error-output');
+            errorOutput.textContent += 'HTML Errors:\n';
+            data.messages.forEach(msg => {
+              errorOutput.textContent += `Line ${msg.lastLine}: ${msg.message}\n`;
+            });
+          }
+        })
+        .catch(error => console.error('Error with HTML validation:', error));
+    }
+
+    // Basic CSS Linter (simple check for missing semicolons)
+    function validateCSS(cssCode) {
+      const cssErrors = [];
+      const regex = /[^;\n]\s*$/g; // Check for lines not ending with a semicolon
+      const matches = cssCode.match(regex);
+      if (matches) {
+        cssErrors.push("CSS issues: Missing semicolon in some lines.");
+      }
+      return cssErrors;
     }
   </script>
+
 </body>
 </html>
