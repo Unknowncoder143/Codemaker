@@ -26,15 +26,13 @@
 
     .container {
       display: flex;
+      flex-direction: column;
       gap: 20px;
-      flex-wrap: wrap;
-      justify-content: space-between;
     }
 
     .panel {
-      flex: 1;
-      min-width: 250px;
-      margin-bottom: 20px;
+      position: relative;
+      width: 100%;
     }
 
     textarea {
@@ -101,40 +99,44 @@
 
   <h2>Live Code Editor with Bug Finder</h2>
 
+  <!-- Chatbot Panel -->
+  <div class="panel">
+    <h3>Chatbot Assistant</h3>
+    <iframe 
+      src="https://www.chatbase.co/chatbot-iframe/m6xR1BNzglaIuuZjU-d85"
+      width="100%" 
+      height="400px"
+      frameborder="0">
+    </iframe>
+  </div>
+
+  <!-- Code Editor -->
   <div class="container">
-    <!-- HTML Panel -->
     <div class="panel">
       <h3>Code Editor</h3>
       <textarea id="html-code" placeholder="Write HTML, CSS, and JS code here..."></textarea>
     </div>
 
-    <!-- Chatbot Panel -->
+    <!-- Result Panel -->
     <div class="panel">
-      <h3>Chatbot Assistant</h3>
-      <iframe 
-        src="https://www.chatbase.co/chatbot-iframe/m6xR1BNzglaIuuZjU-d85"
-        width="100%" 
-        height="400px"
-        frameborder="0">
-      </iframe>
+      <h3>Result</h3>
+      <iframe id="result"></iframe>
     </div>
   </div>
 
-  <!-- Result Panel -->
-  <div class="panel">
-    <h3>Result</h3>
-    <iframe id="result"></iframe>
-  </div>
-
+  <!-- Run Button -->
   <button onclick="runCode()">Run Code</button>
 
+  <!-- Error Output -->
   <h3>Errors</h3>
   <div class="error-output" id="error-output"></div>
 
+  <!-- Footer -->
   <div class="footer">
     <p>Made by Rishi | Your Live Code Editor</p>
   </div>
 
+  <!-- JavaScript for Error Handling -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
   <script>
     function runCode() {
@@ -164,7 +166,7 @@
         }
       }
 
-      // Render the code inside iframe
+      // Render code in the iframe
       iframeDoc.open();
       iframeDoc.write(code);
       iframeDoc.close();
