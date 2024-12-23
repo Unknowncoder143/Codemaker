@@ -39,7 +39,7 @@
 
     textarea {
       width: 100%;
-      height: 200px;
+      height: 300px;
       border: 2px solid #ddd;
       border-radius: 8px;
       padding: 10px;
@@ -95,38 +95,17 @@
       color: #777;
       font-size: 14px;
     }
-
-    @media screen and (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      iframe {
-        height: 300px;
-      }
-    }
   </style>
 </head>
 <body>
 
   <h2>Live Code Editor with Bug Finder</h2>
 
-  <!-- Chatbot Panel -->
-  <div class="panel">
-    <h3>Chatbot</h3>
-    <iframe
-      src="https://www.chatbase.co/chatbot-iframe/m6xR1BNzglaIuuZjU-d85"
-      width="100%"
-      height="400px"
-      frameborder="0">
-    </iframe>
-  </div>
-
   <div class="container">
     <!-- HTML Panel -->
     <div class="panel">
       <h3>HTML Code</h3>
-      <textarea id="html-code" placeholder="Write HTML code here..."></textarea>
+      <textarea id="html-code" placeholder="Write HTML, CSS, and JS code here..."></textarea>
     </div>
 
     <!-- Result Panel -->
@@ -148,29 +127,49 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
   <script>
     function runCode() {
-      const htmlCode = document.getElementById('html-code').value;
+      const code = document.getElementById('html-code').value;
       const iframe = document.getElementById('result');
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
+      // Reset error output
       const errorOutput = document.getElementById('error-output');
       errorOutput.textContent = '';
 
+      // Validate JavaScript
+      const jsMatches = code.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
+      if (jsMatches) {
+        let jsCode = '';
+        jsMatches.forEach(match => {
+          jsCode += match.replace(/<\/?script[^>]*>/g, '');
+        });
+
+        const isValidJS = JSHINT(jsCode);
+        if (!isValidJS) {
+          errorOutput.textContent += 'JavaScript Errors:\n';
+          JSHINT.errors.forEach((error) => {
+            errorOutput.textContent += `Line ${error.line}: ${error.reason}\n`;
+          });
+          return; // Stop execution if JS has errors
+        }
+      }
+
+      // Render the code inside iframe
       iframeDoc.open();
-      iframeDoc.write(htmlCode);
+      iframeDoc.write(code);
       iframeDoc.close();
 
-      validateHTML(htmlCode);
+      // Validate HTML
+      validateHTML(code);
     }
 
-    // Validate HTML using W3C Validator API
-    function validateHTML(htmlCode) {
-      const validatorAPI = `https://validator.w3.org/nu/?doc=data:text/html;charset=utf-8,${encodeURIComponent(htmlCode)}`;
+    function validateHTML(code) {
+      const validatorAPI = `https://validator.w3.org/nu/?doc=data:text/html;charset=utf-8,${encodeURIComponent(code)}`;
       fetch(validatorAPI)
         .then(response => response.json())
         .then(data => {
           if (data.messages && data.messages.length > 0) {
             const errorOutput = document.getElementById('error-output');
-            errorOutput.textContent = 'HTML Errors:\n';
+            errorOutput.textContent += 'HTML Errors:\n';
             data.messages.forEach(msg => {
               errorOutput.textContent += `Line ${msg.lastLine}: ${msg.message}\n`;
             });
