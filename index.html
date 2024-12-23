@@ -33,7 +33,6 @@
 
     .panel {
       flex: 1;
-      position: relative;
       min-width: 250px;
       margin-bottom: 20px;
     }
@@ -47,7 +46,6 @@
       font-family: 'Courier New', monospace;
       font-size: 14px;
       background-color: #fff;
-      transition: border-color 0.3s ease;
     }
 
     textarea:focus {
@@ -59,12 +57,11 @@
       background-color: #4CAF50;
       color: white;
       border: none;
-      padding: 6px 12px;  /* Reduced padding */
-      font-size: 12px;    /* Reduced font size */
+      padding: 10px 20px;
+      font-size: 14px;
       cursor: pointer;
       border-radius: 5px;
       width: 100%;
-      transition: background-color 0.3s ease;
     }
 
     button:hover {
@@ -77,16 +74,6 @@
       border: 2px solid #ddd;
       border-radius: 8px;
       background-color: #fff;
-    }
-
-    .resize-handle {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      width: 10px;
-      height: 10px;
-      background-color: #4CAF50;
-      cursor: se-resize;
     }
 
     .error-output {
@@ -102,12 +89,6 @@
       white-space: pre-wrap;
     }
 
-    .error-output h3 {
-      margin-bottom: 10px;
-      color: #d9534f;
-      font-size: 18px;
-    }
-
     .footer {
       text-align: center;
       margin-top: 40px;
@@ -115,7 +96,6 @@
       font-size: 14px;
     }
 
-    /* Responsive Design */
     @media screen and (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -131,126 +111,55 @@
 
   <h2>Live Code Editor with Bug Finder</h2>
 
-
-
   <!-- Chatbot Panel -->
-    <div class="panel" id="chatbot-panel">
-      <h3>Chatbot</h3>
-      <iframe
-        src="https://www.chatbase.co/chatbot-iframe/m6xR1BNzglaIuuZjU-d85"
-        width="100%"
-        height="400px"
-        frameborder="0">
-      </iframe>
-      <div class="resize-handle" id="chatbot-resize-handle"></div>
-    </div>
+  <div class="panel">
+    <h3>Chatbot</h3>
+    <iframe
+      src="https://www.chatbase.co/chatbot-iframe/m6xR1BNzglaIuuZjU-d85"
+      width="100%"
+      height="400px"
+      frameborder="0">
+    </iframe>
+  </div>
 
   <div class="container">
     <!-- HTML Panel -->
-    <div class="panel" id="html-panel">
+    <div class="panel">
       <h3>HTML Code</h3>
       <textarea id="html-code" placeholder="Write HTML code here..."></textarea>
-      <div class="resize-handle" id="html-resize-handle"></div>
     </div>
 
-
-    
-    <div class="panel" id="result-panel">
+    <!-- Result Panel -->
+    <div class="panel">
       <h3>Result</h3>
       <iframe id="result"></iframe>
-      <div class="resize-handle" id="result-resize-handle"></div>
     </div>
   </div>
 
   <button onclick="runCode()">Run Code</button>
 
   <h3>Errors</h3>
-  <div class="error-output" id="error-output">
-    <h3>Errors:</h3>
-  </div>
+  <div class="error-output" id="error-output"></div>
 
   <div class="footer">
-    <p>made by rishi | Your Live Code Editor</p>
+    <p>Made by Rishi | Your Live Code Editor</p>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
   <script>
-    // Handle resizing of panels
-    function makeResizable(element, handle) {
-      let isResizing = false;
-      let lastDownX = 0;
-      let lastDownY = 0;
-
-      handle.addEventListener('mousedown', function(e) {
-        isResizing = true;
-        lastDownX = e.clientX;
-        lastDownY = e.clientY;
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-      });
-
-      function handleMouseMove(e) {
-        if (!isResizing) return;
-        const offsetX = e.clientX - lastDownX;
-        const offsetY = e.clientY - lastDownY;
-        element.style.width = `${element.offsetWidth + offsetX}px`;
-        element.style.height = `${element.offsetHeight + offsetY}px`;
-        lastDownX = e.clientX;
-        lastDownY = e.clientY;
-      }
-
-      function handleMouseUp() {
-        isResizing = false;
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      }
-    }
-
-    makeResizable(document.getElementById('html-panel'), document.getElementById('html-resize-handle'));
-    makeResizable(document.getElementById('css-panel'), document.getElementById('css-resize-handle'));
-    makeResizable(document.getElementById('js-panel'), document.getElementById('js-resize-handle'));
-    makeResizable(document.getElementById('chatbot-panel'), document.getElementById('chatbot-resize-handle'));
-    makeResizable(document.getElementById('result-panel'), document.getElementById('result-resize-handle'));
-
     function runCode() {
       const htmlCode = document.getElementById('html-code').value;
-      const cssCode = document.getElementById('css-code').value;
-      const jsCode = document.getElementById('js-code').value;
       const iframe = document.getElementById('result');
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-      // Reset error output
       const errorOutput = document.getElementById('error-output');
       errorOutput.textContent = '';
 
-      // Run the JavaScript linting
-      const isValidJS = JSHINT(jsCode);
-      if (!isValidJS) {
-        errorOutput.textContent = 'JavaScript Errors: \n';
-        JSHINT.errors.forEach((error) => {
-          errorOutput.textContent += `Line ${error.line}: ${error.reason}\n`;
-        });
-      }
+      iframeDoc.open();
+      iframeDoc.write(htmlCode);
+      iframeDoc.close();
 
-      // Validate HTML
       validateHTML(htmlCode);
-
-      // Execute the code in the iframe if no errors
-      if (isValidJS) {
-        iframeDoc.open();
-        iframeDoc.write(`
-          <html>
-            <head>
-              <style>${cssCode}</style>
-            </head>
-            <body>
-              ${htmlCode}
-              <script>${jsCode}<\/script>
-            </body>
-          </html>
-        `);
-        iframeDoc.close();
-      }
     }
 
     // Validate HTML using W3C Validator API
@@ -259,9 +168,9 @@
       fetch(validatorAPI)
         .then(response => response.json())
         .then(data => {
-          if (data.messages.length > 0) {
+          if (data.messages && data.messages.length > 0) {
             const errorOutput = document.getElementById('error-output');
-            errorOutput.textContent += 'HTML Errors:\n';
+            errorOutput.textContent = 'HTML Errors:\n';
             data.messages.forEach(msg => {
               errorOutput.textContent += `Line ${msg.lastLine}: ${msg.message}\n`;
             });
@@ -269,9 +178,6 @@
         })
         .catch(error => console.error('Error with HTML validation:', error));
     }
-
   </script>
-
 </body>
-  </html>
-  
+</html>
