@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Code Editor with Bug Finder</title>
+  <title>Live Code Editor</title>
   <style>
     * {
       box-sizing: border-box;
@@ -74,19 +74,6 @@
       background-color: #fff;
     }
 
-    .error-output {
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      border: 2px solid #ddd;
-      margin-top: 20px;
-      max-height: 200px;
-      overflow-y: auto;
-      font-size: 14px;
-      color: #d9534f;
-      white-space: pre-wrap;
-    }
-
     .footer {
       text-align: center;
       margin-top: 40px;
@@ -97,18 +84,7 @@
 </head>
 <body>
 
-  <h2>Live Code Editor with Bug Finder</h2>
-
-  <!-- Chatbot Panel -->
-  <div class="panel">
-    <h3>Chatbot Assistant</h3>
-    <iframe 
-      src="https://www.chatbase.co/chatbot-iframe/m6xR1BNzglaIuuZjU-d85"
-      width="100%" 
-      height="400px"
-      frameborder="0">
-    </iframe>
-  </div>
+  <h2>Live Code Editor</h2>
 
   <!-- Code Editor -->
   <div class="container">
@@ -127,46 +103,19 @@
   <!-- Run Button -->
   <button onclick="runCode()">Run Code</button>
 
-  <!-- Error Output -->
-  <h3>Errors</h3>
-  <div class="error-output" id="error-output"></div>
-
   <!-- Footer -->
   <div class="footer">
     <p>Made by Rishi | Your Live Code Editor</p>
   </div>
 
-  <!-- JavaScript for Error Handling -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.12.0/jshint.min.js"></script>
+  <!-- JavaScript -->
   <script>
     function runCode() {
       const code = document.getElementById('html-code').value;
       const iframe = document.getElementById('result');
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-      // Reset error output
-      const errorOutput = document.getElementById('error-output');
-      errorOutput.textContent = '';
-
-      // Validate JavaScript
-      const jsMatches = code.match(/<script[^>]*>([\s\S]*?)<\/script>/gi);
-      if (jsMatches) {
-        let jsCode = '';
-        jsMatches.forEach(match => {
-          jsCode += match.replace(/<\/?script[^>]*>/g, '');
-        });
-
-        const isValidJS = JSHINT(jsCode);
-        if (!isValidJS) {
-          errorOutput.textContent += 'JavaScript Errors:\n';
-          JSHINT.errors.forEach((error) => {
-            errorOutput.textContent += `Line ${error.line}: ${error.reason}\n`;
-          });
-          return; // Stop execution if JS has errors
-        }
-      }
-
-      // Render code in the iframe
+      // Render code directly in the iframe
       iframeDoc.open();
       iframeDoc.write(code);
       iframeDoc.close();
