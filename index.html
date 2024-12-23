@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live Code Editor</title>
+  <title>Live Code Editor with Bug Finder</title>
   <style>
     * {
       box-sizing: border-box;
@@ -74,6 +74,19 @@
       background-color: #fff;
     }
 
+    .error-output {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      margin-top: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 14px;
+      color: #d9534f;
+      white-space: pre-wrap;
+    }
+
     .footer {
       text-align: center;
       margin-top: 40px;
@@ -84,7 +97,18 @@
 </head>
 <body>
 
-  <h2>Live Code Editor</h2>
+  <h2>Live Code Editor with Bug Finder</h2>
+
+  <!-- Chatbot Panel -->
+  <div class="panel">
+    <h3>Chatbot Assistant</h3>
+    <iframe 
+      src="https://www.chatbase.co/chatbot-iframe/m6xR1BNzglaIuuZjU-d85"
+      width="100%" 
+      height="400px"
+      frameborder="0">
+    </iframe>
+  </div>
 
   <!-- Code Editor -->
   <div class="container">
@@ -103,22 +127,40 @@
   <!-- Run Button -->
   <button onclick="runCode()">Run Code</button>
 
+  <!-- Error Output -->
+  <h3>Errors</h3>
+  <div class="error-output" id="error-output"></div>
+
   <!-- Footer -->
   <div class="footer">
     <p>Made by Rishi | Your Live Code Editor</p>
   </div>
 
-  <!-- JavaScript -->
+  <!-- JavaScript for Error Handling -->
   <script>
     function runCode() {
       const code = document.getElementById('html-code').value;
       const iframe = document.getElementById('result');
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      const errorOutput = document.getElementById('error-output');
 
-      // Render code directly in the iframe
-      iframeDoc.open();
-      iframeDoc.write(code);
-      iframeDoc.close();
+      // Clear previous errors
+      errorOutput.textContent = '';
+
+      try {
+        // Create the iframe document
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(code);
+        iframeDoc.close();
+      } catch (error) {
+        // Display runtime errors
+        errorOutput.textContent = `Error: ${error.message}`;
+      }
+
+      // Capture runtime errors from the iframe itself
+      iframe.contentWindow.onerror = function (message, source, lineno, colno, error) {
+        errorOutput.textContent += `Error: ${message} at line ${lineno}, column ${colno}\n`;
+      };
     }
   </script>
 </body>
