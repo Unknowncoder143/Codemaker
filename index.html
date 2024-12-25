@@ -104,11 +104,17 @@
         <div class="card">
           <div class="card-body">
             <h3>Chatbot Assistant</h3>
-            <iframe src="https://copilot.microsoft.com/onboarding" width="100%" height="400px" frameborder="0"></iframe>
-
-            <p id="response"></p>
-            <input id="input" type="text" placeholder="Ask me anything..." />
-  <button onclick="askCopilot()">Send</button>
+            <!-- Chatbot Assistant -->
+<div class="col-md-4 mb-4">
+  <div class="card">
+    <div class="card-body">
+      <h3>AI Chatbot Assistant</h3>
+      <div id="chatbox" style="height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;"></div>
+      <input id="chat-input" type="text" class="form-control mb-2" placeholder="Ask me anything..." />
+      <button class="btn btn-primary w-100" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
   
           </div>
         </div>
