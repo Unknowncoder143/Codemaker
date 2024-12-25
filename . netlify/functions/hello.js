@@ -13,7 +13,7 @@ exports.handler = async (event) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // API key stored in environment variables
+        Authorization: `Bearer ${process.env.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}`, // API key stored in environment variables
       },
       body: JSON.stringify({
         model: 'gpt-4', // Use GPT-4 or GPT-3.5
