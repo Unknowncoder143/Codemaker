@@ -166,27 +166,18 @@
   <section> Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style="height:0.875rem;vertical-align:middle;"/></section>
 </form>
 
-  <div id="paypal-button-container-P-7RA44463KH240163XM54ACXA"></div>
-<script src="https://www.paypal.com/sdk/js?client-id=AQYR_hLT_McXqu8Deefee-0hHAqfZuqFhI8mis-oopEW7XAFtBt06aPCILs_7o7ggLHAvx_GbTVglw-W&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+
+  //paypa donation button 
+
+<script src="https://www.paypal.com/sdk/js?client-id=BAAwZBYUVvPQfM0RhwKlIjA7MScxv861utMdr0gk7GJY00B2aOt64RfNdCl0tVpq93Qtpblx_NlD1AnBbI&components=hosted-buttons&disable-funding=venmo&currency=USD"></script>
+<div id="paypal-container-LAHL3D5DHHCPW"></div>
 <script>
-  paypal.Buttons({
-      style: {
-          shape: 'rect',
-          color: 'gold',
-          layout: 'vertical',
-          label: 'subscribe'
-      },
-      createSubscription: function(data, actions) {
-        return actions.subscription.create({
-          /* Creates the subscription */
-          plan_id: 'P-7RA44463KH240163XM54ACXA'
-        });
-      },
-      onApprove: function(data, actions) {
-        alert(data.subscriptionID); // You can add optional success message for the subscriber here
-      }
-  }).render('#paypal-button-container-P-7RA44463KH240163XM54ACXA'); // Renders the PayPal button
+  paypal.HostedButtons({
+    hostedButtonId: "LAHL3D5DHHCPW",
+  }).render("#paypal-container-LAHL3D5DHHCPW")
 </script>
+
+  
   <footer>
     <ul class="footer-links">
       <li><a href="#">Home</a></li>
